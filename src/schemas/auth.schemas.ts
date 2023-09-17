@@ -1,5 +1,5 @@
 import Joi from 'joi';
-import { SignUp, SignIn } from '@/types/user-types';
+import { SignUp, SignIn } from '@/types/user.types';
 
 const passwordRules = /(?=^.{8,}$)(?=.*\d)(?=.*[!@#$%^&*]+)(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/;
 const phoneRules = /(\d{2})(\d{1})(\d{4})(\d{4})/;
