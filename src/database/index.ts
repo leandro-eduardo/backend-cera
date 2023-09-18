@@ -1,16 +1,14 @@
 import mongoose from 'mongoose';
-import dotenv from 'dotenv';
+import env from '@/utils/env.config';
 
-dotenv.config();
-
-const dbUrl = process.env.MONGO_URI as string;
+const dbUrl = env.MONGO_URI || '';
 
 const connectToDatabase = async () => {
   try {
     await mongoose.connect(dbUrl);
-    console.log('✅ Connected to the database!');
-  } catch (error: any) {
-    console.log('❌ Database connection error', error);
+    console.log('Connected to the database! ✅');
+  } catch (error) {
+    console.log('Database connection error ❌', error);
   }
 };
 

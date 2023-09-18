@@ -1,15 +1,16 @@
 import Joi from 'joi';
-import { SignUp, SignIn } from '@/types/user.types';
+import { CreateUserData, SignInData } from '@/models/user.model';
 
-const passwordRules = /(?=^.{8,}$)(?=.*\d)(?=.*[!@#$%^&*]+)(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/;
-const phoneRules = /(\d{2})(\d{1})(\d{4})(\d{4})/;
+export const passwordRules = /(?=^.{8,}$)(?=.*\d)(?=.*[!@#$%^&*]+)(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/;
+export const phoneRules = /(\d{2})(\d{1})(\d{4})(\d{4})/;
+export const emailRules = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
 
-export const signInSchema = Joi.object<SignIn>({
+export const signInSchema = Joi.object<SignInData>({
   email: Joi.string().email().required(),
   password: Joi.string().required(),
 });
 
-export const signUpSchema = Joi.object<SignUp>({
+export const signUpSchema = Joi.object<CreateUserData>({
   name: Joi.string().min(3).required(),
   email: Joi.string().email().required(),
   password: Joi.string().regex(passwordRules).required().messages({
