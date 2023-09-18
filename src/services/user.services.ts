@@ -1,6 +1,6 @@
 import { ChangePasswordData } from '@/models/user.model';
 import userRepository from '@/repositories/user.repository';
-import bcrypt from 'bcrypt';
+import { checkPassword, generatePasswordHash } from './auth.services';
 
 const getProfile = async (userId: String) => {
   const user = await userRepository.findUserById(userId);
@@ -19,11 +19,10 @@ const changePassword = async (userId: string, data: ChangePasswordData) => {
   const existingUser = await userRepository.findUserById(userId);
   if (!existingUser) throw Error('Invalid credentials');
 
-  const isPasswordCorrect = bcrypt.compareSync(data.currentPassword, existingUser.password);
+  const isPasswordCorrect = checkPassword(data.currentPassword, existingUser.password);
   if (!isPasswordCorrect) throw Error('Invalid credentials');
 
-  const SALT = 10;
-  const hashedPassword = bcrypt.hashSync(data.newPassword, SALT);
+  const hashedPassword = generatePasswordHash(data.newPassword);
   await userRepository.changePassword(userId, hashedPassword);
 };
 
