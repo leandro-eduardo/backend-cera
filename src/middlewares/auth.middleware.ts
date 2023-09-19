@@ -3,6 +3,7 @@ import userServices from '@/services/user.services';
 import jwt from 'jsonwebtoken';
 import env from '@/utils/env.config';
 import { JwtPayload } from 'jsonwebtoken';
+import { unauthorizedError } from '../errors';
 
 type Payload = {
   userId: string;
@@ -20,13 +21,13 @@ function getJsonWebTokenSecret() {
 
 export async function auth(req: Request, res: Response, next: NextFunction) {
   const { authorization } = req.headers;
-  if (!authorization) throw Error('missing token');
+  if (!authorization) throw unauthorizedError('missing token');
 
   const tokenParts = authorization.split(' ');
 
   const [scheme, token] = tokenParts;
 
-  if (!/^Bearer$/i.test(scheme) || tokenParts.length !== 2) throw Error('token malformed');
+  if (!/^Bearer$/i.test(scheme) || tokenParts.length !== 2) throw unauthorizedError('token malformed');
 
   try {
     const payload = jwt.verify(token, getJsonWebTokenSecret()) as Payload;
@@ -35,6 +36,6 @@ export async function auth(req: Request, res: Response, next: NextFunction) {
     next();
   } catch (error: any) {
     console.log(error);
-    throw Error(error.expiredAt ? 'expired token' : 'invalid token');
+    throw unauthorizedError(error.expiredAt ? 'expired token' : 'invalid token');
   }
 }

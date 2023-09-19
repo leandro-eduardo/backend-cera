@@ -3,13 +3,14 @@ import userRepository from '@/repositories/user.repository';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import env from '@/utils/env.config';
+import { conflictError, unauthorizedError } from '@/errors';
 
 const signIn = async (user: SignInData) => {
   const existingUser = await userRepository.findUserByEmail(user);
-  if (!existingUser) throw Error('Invalid credentials');
+  if (!existingUser) throw unauthorizedError('invalid credentials');
 
   const isPasswordCorrect = checkPassword(user.password, existingUser.password);
-  if (!isPasswordCorrect) throw Error('Invalid credentials');
+  if (!isPasswordCorrect) throw unauthorizedError('invalid credentials');
 
   const token = await generateToken({ userId: existingUser._id });
 
@@ -18,7 +19,7 @@ const signIn = async (user: SignInData) => {
 
 const createUser = async (user: CreateUserData) => {
   const existingUser = await userRepository.findUserByEmail(user);
-  if (existingUser) throw Error('User is already registered');
+  if (existingUser) throw conflictError();
 
   const hashedPassword = generatePasswordHash(user.password);
   await userRepository.createUser({ ...user, password: hashedPassword });

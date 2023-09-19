@@ -1,4 +1,4 @@
-import { CreateUserData, SignInData } from '../models/user.model';
+import { CreateUserData, SignInData } from '@/models/user.model';
 import UserModel from '@/models/user.model';
 
 const createUser = async (user: CreateUserData) => {

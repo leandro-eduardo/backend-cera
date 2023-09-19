@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { ObjectSchema } from 'joi';
+import { badRequestError } from '../errors';
 
 type errors = {
   [key: string]: string;
@@ -14,7 +15,8 @@ export function schemaValidator(schema: ObjectSchema) {
       for (let item of error.details) {
         errors[item.path[0]] = item.message.replace(/['"]+/g, '');
       }
-      return res.status(422).send({ type: 'wrong_schema', statusCode: 422, message: errors });
+
+      throw badRequestError('invalid data was sent', errors);
     }
     next();
   };

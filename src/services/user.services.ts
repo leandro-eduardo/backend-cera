@@ -1,10 +1,11 @@
 import { ChangePasswordData } from '@/models/user.model';
 import userRepository from '@/repositories/user.repository';
 import { checkPassword, generatePasswordHash } from './auth.services';
+import { notFoundError, unauthorizedError } from '@/errors';
 
 const getProfile = async (userId: String) => {
   const user = await userRepository.findUserById(userId);
-  if (!user) throw Error('User not found');
+  if (!user) throw notFoundError('user not found');
   return {
     _id: user._id,
     name: user.name,
@@ -17,10 +18,10 @@ const getProfile = async (userId: String) => {
 
 const changePassword = async (userId: string, data: ChangePasswordData) => {
   const existingUser = await userRepository.findUserById(userId);
-  if (!existingUser) throw Error('Invalid credentials');
+  if (!existingUser) throw unauthorizedError('invalid credentials');
 
   const isPasswordCorrect = checkPassword(data.currentPassword, existingUser.password);
-  if (!isPasswordCorrect) throw Error('Invalid credentials');
+  if (!isPasswordCorrect) throw unauthorizedError('invalid credentials');
 
   const hashedPassword = generatePasswordHash(data.newPassword);
   await userRepository.changePassword(userId, hashedPassword);
@@ -28,7 +29,7 @@ const changePassword = async (userId: string, data: ChangePasswordData) => {
 
 const findById = async (id: string) => {
   const user = await userRepository.findUserById(id);
-  if (!user) throw Error('User not found');
+  if (!user) throw notFoundError('user not found');
 
   return user;
 };
