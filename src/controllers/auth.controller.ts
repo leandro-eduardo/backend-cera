@@ -2,8 +2,8 @@ import { Request, Response } from 'express';
 import authServices from '@/services/auth.services';
 
 const signIn = async (req: Request, res: Response) => {
-  const token = await authServices.signIn(req.body);
-  res.send({ token });
+  const signInData = await authServices.signIn(req.body);
+  res.send(signInData);
 };
 
 const signUp = async (req: Request, res: Response) => {

@@ -14,7 +14,13 @@ const signIn = async (user: SignInData) => {
 
   const token = await generateToken({ userId: existingUser._id });
 
-  return token;
+  return {
+    user: {
+      id: existingUser._id,
+      email: existingUser.email,
+    },
+    token,
+  };
 };
 
 const createUser = async (user: CreateUserData) => {
