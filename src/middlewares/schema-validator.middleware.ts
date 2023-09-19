@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { ObjectSchema } from 'joi';
-import { badRequestError } from '../errors';
+import { badRequestError } from '@/errors';
 
 type errors = {
   [key: string]: string;

@@ -3,7 +3,7 @@ import userServices from '@/services/user.services';
 import jwt from 'jsonwebtoken';
 import env from '@/utils/env.config';
 import { JwtPayload } from 'jsonwebtoken';
-import { unauthorizedError } from '../errors';
+import { unauthorizedError } from '@/errors';
 
 type Payload = {
   userId: string;
