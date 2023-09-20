@@ -28,7 +28,7 @@ const createUser = async (user: CreateUserData) => {
   if (existingUser) throw conflictError();
 
   const hashedPassword = generatePasswordHash(user.password);
-  await userRepository.createUser({ ...user, password: hashedPassword });
+  return await userRepository.createUser({ ...user, password: hashedPassword });
 };
 
 export const checkPassword = (passwordReceived: string, userPassword: string) => {

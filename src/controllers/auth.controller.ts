@@ -7,8 +7,8 @@ const signIn = async (req: Request, res: Response) => {
 };
 
 const signUp = async (req: Request, res: Response) => {
-  await authServices.createUser(req.body);
-  res.status(201).send({ message: 'user created successfully' });
+  const user = await authServices.createUser(req.body);
+  res.status(201).send(user);
 };
 
 export default {

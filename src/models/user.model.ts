@@ -18,5 +18,14 @@ export type ChangePasswordData = {
   newPassword: string;
 };
 
+userSchema.methods.toJSON = function () {
+  const obj = this.toObject();
+  obj.id = obj._id;
+  delete obj._id;
+  delete obj.password;
+  const { id, name, email, phone, createdAt, updatedAt } = obj;
+  return { id, name, email, phone, createdAt, updatedAt };
+};
+
 const UserModel = mongoose.model('User', userSchema);
 export default UserModel;

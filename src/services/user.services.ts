@@ -6,14 +6,7 @@ import { notFoundError, unauthorizedError } from '@/errors';
 const getProfile = async (userId: String) => {
   const user = await userRepository.findUserById(userId);
   if (!user) throw notFoundError('user not found');
-  return {
-    _id: user._id,
-    name: user.name,
-    email: user.email,
-    phone: user.phone,
-    createdAt: user.createdAt,
-    updatedAt: user.updatedAt,
-  };
+  return user;
 };
 
 const changePassword = async (userId: string, data: ChangePasswordData) => {
