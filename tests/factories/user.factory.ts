@@ -3,7 +3,9 @@ import { faker } from '@faker-js/faker';
 import { CreateUserData } from '@/models/user.model';
 import UserModel from '@/models/user.model';
 
-export async function createUser(params: Partial<CreateUserData>): Promise<CreateUserData & { id?: string }> {
+export async function createUser(
+  params: Partial<CreateUserData> = {}
+): Promise<CreateUserData & { id?: string }> {
   const incomingPassword = params.password || faker.internet.password();
   const hashedPassword = await bcrypt.hash(incomingPassword, bcrypt.genSaltSync());
 
