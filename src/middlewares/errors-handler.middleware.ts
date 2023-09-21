@@ -17,5 +17,10 @@ export default function errorsHandler(error: AppError, req: Request, res: Respon
       .status(statusCode)
       .send({ type: error.type, statusCode, message: error.message, details: error.details });
   }
-  res.sendStatus(500);
+
+  res.status(500).send({
+    type: 'server_error',
+    statusCode: 500,
+    message: error,
+  });
 }
