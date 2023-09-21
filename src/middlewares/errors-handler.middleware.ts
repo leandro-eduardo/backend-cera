@@ -1,12 +1,13 @@
 import { Request, Response, NextFunction } from 'express';
 import { AppError, errorTypeToStatusCode, isAppError } from '@/errors';
 import { JsonWebTokenError } from 'jsonwebtoken';
+import httpStatus from 'http-status';
 
 export default function errorsHandler(error: AppError, req: Request, res: Response, next: NextFunction) {
   if (error instanceof JsonWebTokenError) {
-    return res.status(401).send({
+    return res.status(httpStatus.UNAUTHORIZED).send({
       type: 'unauthorized',
-      statusCode: 401,
+      statusCode: httpStatus.UNAUTHORIZED,
       message: error.message,
     });
   }
@@ -17,5 +18,10 @@ export default function errorsHandler(error: AppError, req: Request, res: Respon
       .status(statusCode)
       .send({ type: error.type, statusCode, message: error.message, details: error.details });
   }
-  res.sendStatus(500);
+
+  res.status(httpStatus.INTERNAL_SERVER_ERROR).send({
+    type: 'server_error',
+    statusCode: httpStatus.INTERNAL_SERVER_ERROR,
+    message: error,
+  });
 }
