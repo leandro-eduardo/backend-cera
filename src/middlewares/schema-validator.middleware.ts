@@ -6,9 +6,13 @@ type errors = {
   [key: string]: string;
 };
 
-export function schemaValidator(schema: ObjectSchema) {
-  return (req: Request, res: Response, next: NextFunction) => {
-    const { error } = schema.validate(req.body, { abortEarly: false });
+interface CustomRequest extends Request {
+  [key: string]: any;
+}
+
+export function schemaValidator(schema: ObjectSchema, property: string) {
+  return (req: CustomRequest, res: Response, next: NextFunction) => {
+    const { error } = schema.validate(req[property], { abortEarly: false });
     if (error) {
       const errors: errors = {};
 

@@ -2,15 +2,15 @@ import { Router } from 'express';
 import userController from '@/controllers/user.controller';
 import { auth } from '@/middlewares/auth.middleware';
 import { schemaValidator } from '@/middlewares/schema-validator.middleware';
-import { changePasswordSchema } from '@/schemas/user.schemas';
+import { changePasswordSchema, objectIdSchema } from '@/schemas/user.schemas';
 
 const userRouter = Router();
 
-userRouter.get('/:userId', userController.getProfile);
+userRouter.get('/:userId', schemaValidator(objectIdSchema, 'params'), userController.getProfile);
 userRouter.patch(
   '/senha/alterar',
   auth,
-  schemaValidator(changePasswordSchema),
+  schemaValidator(changePasswordSchema, 'body'),
   userController.changePassword
 );
 
