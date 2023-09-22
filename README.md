@@ -2,6 +2,8 @@
 
 This repository contains the solution to a technical challenge that involves creating a MongoDB database and building an API in Node.js for user authentication and profile management.
 
+☁️ API Deploy URL: [https://backend-cera-api.onrender.com](https://backend-cera-api.onrender.com)
+
 ## Table of Contents
 
 - [Overview](#overview)
@@ -35,7 +37,7 @@ The API is built using Node.js and Express.js with MongoDB and offers the follow
 
 ## API Documentation
 
-> Coming soon...
+You can access the API documentation here: [https://backend-cera-api.onrender.com/docs](https://backend-cera-api.onrender.com/docs)
 
 ## Installation
 
