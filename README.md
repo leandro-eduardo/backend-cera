@@ -15,10 +15,13 @@ This repository contains the solution to a technical challenge that involves cre
 
 The API is built using Node.js and Express.js with MongoDB and offers the following routes:
 
-`POST /autenticacao/entrar`: This route allows users to log in to the API.
-`POST /autenticacao/registrar`: This route allows users to register in the API.
-`GET /perfil/{idUsuario}`: This route allows users to retrieve profile information by ID.
-`PATCH /perfil/senha/alterar/{idUsuario}`: This route allows users to change their password.
+`POST /autenticacao/entrar` This route allows users to log in to the API.
+
+`POST /autenticacao/registrar` This route allows users to register in the API.
+
+`GET /perfil/{idUsuario}` This route allows users to retrieve profile information by ID.
+
+`PATCH /perfil/senha/alterar/{idUsuario}` This route allows users to change their password.
 
 ### Key Technologies Used
 
