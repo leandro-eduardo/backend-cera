@@ -1,0 +1,339 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Back-end CERA",
+    "description": "API documentation for user authentication and profile management",
+    "contact": {
+      "email": "leandro.silva.eduardo1@gmail.com"
+    },
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:4000"
+    }
+  ],
+  "paths": {
+    "/autenticacao/registrar": {
+      "post": {
+        "summary": "User registration",
+        "description": "This route allows users to register in the API",
+        "tags": ["Authentication"],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/User"
+              },
+              "examples": {
+                "Valid user body": {
+                  "value": {
+                    "name": "John Doe",
+                    "email": "john.doe@gmail.com",
+                    "password": "myStr0ngP@ssword",
+                    "phone": "44999887766"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "example": {
+                  "id": "650d41fa9f8b364e2c882543",
+                  "name": "John Doe",
+                  "email": "john.doe@gmail.com",
+                  "phone": "44999887766",
+                  "createdAt": "2023-09-22T07:27:54.079Z",
+                  "updatedAt": "2023-09-22T07:27:54.079Z"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "example": {
+                  "type": "bad_request",
+                  "statusCode": 400,
+                  "message": "invalid data was sent",
+                  "details": {
+                    "name": "name is required"
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "example": {
+                  "type": "conflict",
+                  "statusCode": 409
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/autenticacao/entrar": {
+      "post": {
+        "summary": "User login",
+        "description": "This route allows users to log in to the API",
+        "tags": ["Authentication"],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SignIn"
+              },
+              "examples": {
+                "Valid login body": {
+                  "value": {
+                    "email": "john.doe@gmail.com",
+                    "password": "myStr0ngP@ssword"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "example": {
+                  "user" : {
+                    "id": "650d41fa9f8b364e2c882543",
+                    "email": "john.doe@gmail.com"
+                  },
+                  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "example": {
+                  "type": "bad_request",
+                  "statusCode": 400,
+                  "message": "invalid data was sent",
+                  "details": {
+                    "name": "email is required"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "type": "unauthorized",
+                  "statusCode": 401,
+                  "message": "invalid credentials"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/perfil/{userId}": {
+      "get": {
+        "summary": "User profile query",
+        "description": "This route allows users to retrieve profile information by ID",
+        "tags": ["User profile"],
+        "parameters" : [
+          {
+            "name": "userId",
+            "in": "path",
+            "description": "User id to consult the profile",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "example": {
+                  "id": "650d41fa9f8b364e2c882543",
+                  "name": "John Doe",
+                  "email": "john.doe@gmail.com",
+                  "phone": "44999887766",
+                  "createdAt": "2023-09-22T07:27:54.079Z",
+                  "updatedAt": "2023-09-22T07:27:54.079Z"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "example": {
+                  "type": "bad_request",
+                  "statusCode": 400,
+                  "message": "invalid data was sent",
+                  "details": {
+                    "userId": "userId length must be 24 characters long"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "example": {
+                  "type": "not_found",
+                  "statusCode": 404,
+                  "message": "user not found"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/perfil/senha/alterar": {
+      "patch": {
+        "summary": "User password change",
+        "description": "This route allows users to change their password",
+        "tags": ["User profile"],
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChangePassword"
+              },
+              "examples": {
+                "Valid user change password body": {
+                  "value": {
+                    "currentPassword": "myStr0ngP@ssword",
+                    "newPassword": "myNewStr0ngP@ssword"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "example": {
+                  "message": "password changed"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "example": {
+                  "type": "bad_request",
+                  "statusCode": 400,
+                  "message": "invalid data was sent",
+                  "details": {
+                    "userId": "userId length must be 24 characters long"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "type": "unauthorized",
+                  "statusCode": 401,
+                  "message": "current password is incorrect | missing authorization header | invalid token | invalid signature | jwt malformed | jwt expired"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "example": {
+                  "type": "not_found",
+                  "statusCode": 404,
+                  "message": "user not found"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "User": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          },
+          "phone": {
+            "type": "string"
+          }
+        }
+      },
+      "SignIn": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          }
+        }
+      },
+      "ChangePassword": {
+        "type": "object",
+        "properties": {
+          "currentPassword": {
+            "type": "string"
+          },
+          "newPassword": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  }
+}

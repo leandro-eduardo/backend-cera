@@ -14,7 +14,7 @@ const changePassword = async (userId: string, data: ChangePasswordData) => {
   const existingUser = await findById(userId);
 
   const isPasswordCorrect = checkPassword(data.currentPassword, existingUser.password);
-  if (!isPasswordCorrect) throw unauthorizedError('the password is incorrect');
+  if (!isPasswordCorrect) throw unauthorizedError('current password is incorrect');
 
   const hashedPassword = generatePasswordHash(data.newPassword);
   await userRepository.changePassword(userId, hashedPassword);
