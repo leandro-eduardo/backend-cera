@@ -4,7 +4,7 @@
   "description": "CERA group back-end job challenge",
   "main": "app.ts",
   "scripts": {
-    "build": "tsc && tsc-alias ./src/server.ts",
+    "build": "tsc -p tsconfig.build.json && tsc-alias ./src/server.ts",
     "start": "node ./dist/server.js",
     "dev": "nodemon ./src/server.ts",
     "test": "jest --verbose",
