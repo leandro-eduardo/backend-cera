@@ -29,6 +29,6 @@ export async function auth(req: Request, res: Response, next: NextFunction) {
 
   const payload = jwt.verify(token, getJsonWebTokenSecret()) as Payload;
   const user = await userServices.findById(payload.userId);
-  res.locals.userId = user._id;
+  res.locals.userId = user._id.toString();
   next();
 }

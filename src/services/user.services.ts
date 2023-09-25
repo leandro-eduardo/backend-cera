@@ -10,14 +10,16 @@ const findById = async (id: string) => {
   return user;
 };
 
-const changePassword = async (userId: string, data: ChangePasswordData) => {
-  const existingUser = await findById(userId);
+const changePassword = async (localsUserId: string, paramsUserId: string, data: ChangePasswordData) => {
+  const existingUser = await findById(paramsUserId);
+
+  if (paramsUserId !== localsUserId) throw unauthorizedError('you can only change your own password');
 
   const isPasswordCorrect = checkPassword(data.currentPassword, existingUser.password);
   if (!isPasswordCorrect) throw unauthorizedError('current password is incorrect');
 
   const hashedPassword = generatePasswordHash(data.newPassword);
-  await userRepository.changePassword(userId, hashedPassword);
+  await userRepository.changePassword(paramsUserId, hashedPassword);
 };
 
 export default {

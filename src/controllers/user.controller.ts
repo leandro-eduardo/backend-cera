@@ -9,8 +9,10 @@ const getProfile = async (req: Request, res: Response) => {
 };
 
 const changePassword = async (req: Request, res: Response) => {
-  const { userId } = res.locals;
-  await userServices.changePassword(userId, req.body);
+  const { userId: localsUserId } = res.locals;
+  const { userId: paramsUserId } = req.params;
+
+  await userServices.changePassword(localsUserId, paramsUserId, req.body);
   res.status(httpStatus.OK).send({ message: 'password changed' });
 };
 

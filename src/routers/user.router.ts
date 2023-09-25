@@ -8,8 +8,9 @@ const userRouter = Router();
 
 userRouter.get('/:userId', schemaValidator(objectIdSchema, 'params'), userController.getProfile);
 userRouter.patch(
-  '/senha/alterar',
+  '/senha/alterar/:userId',
   auth,
+  schemaValidator(objectIdSchema, 'params'),
   schemaValidator(changePasswordSchema, 'body'),
   userController.changePassword
 );
