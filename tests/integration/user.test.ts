@@ -2,12 +2,12 @@ import app, { init, close } from '@/app';
 import supertest from 'supertest';
 import httpStatus from 'http-status';
 import { faker } from '@faker-js/faker';
-import { cleanDatabase, generateValidToken } from '../helpers';
+import { clearDatabase, deleteUser, generateValidToken } from '../helpers';
 import { createUser } from '../factories/user.factory';
 
 beforeAll(async () => {
   await init();
-  await cleanDatabase();
+  await clearDatabase();
 });
 
 afterAll(async () => {
@@ -17,6 +17,8 @@ afterAll(async () => {
 const server = supertest(app);
 
 describe('GET /perfil/:userId', () => {
+  const validUserIdParam = faker.string.hexadecimal({ length: 24, prefix: '' });
+
   it('should respond with status 400 when userId param is not valid', async () => {
     const invalidUserIdParam = 1;
     const response = await server.get(`/perfil/${invalidUserIdParam}`);
@@ -25,7 +27,6 @@ describe('GET /perfil/:userId', () => {
   });
 
   it('should respond with status 404 when user does not exist', async () => {
-    const validUserIdParam = faker.string.hexadecimal({ length: 24, prefix: '' });
     const response = await server.get(`/perfil/${validUserIdParam}`);
 
     expect(response.status).toBe(httpStatus.NOT_FOUND);
@@ -47,9 +48,18 @@ describe('GET /perfil/:userId', () => {
   });
 });
 
-describe('PATCH /perfil/senha/alterar', () => {
+describe('PATCH /perfil/senha/alterar/:userId', () => {
+  const validUserIdParam = faker.string.hexadecimal({ length: 24, prefix: '' });
+
+  it('should respond with status 400 when userId param is not valid', async () => {
+    const invalidUserIdParam = 1;
+    const response = await server.patch(`/perfil/senha/alterar/${invalidUserIdParam}`);
+
+    expect(response.status).toBe(httpStatus.BAD_REQUEST);
+  });
+
   it('should respond with status 401 when token is not provided', async () => {
-    const response = await server.patch('/perfil/senha/alterar');
+    const response = await server.patch(`/perfil/senha/alterar/${validUserIdParam}`);
 
     expect(response.status).toBe(httpStatus.UNAUTHORIZED);
   });
@@ -57,7 +67,9 @@ describe('PATCH /perfil/senha/alterar', () => {
   it('should respond with status 401 if provided token is not valid', async () => {
     const token = faker.lorem.word();
 
-    const response = await server.patch('/perfil/senha/alterar').set('Authorization', `Bearer ${token}`);
+    const response = await server
+      .patch(`/perfil/senha/alterar/${validUserIdParam}`)
+      .set('Authorization', `Bearer ${token}`);
 
     expect(response.status).toBe(httpStatus.UNAUTHORIZED);
   });
@@ -73,7 +85,7 @@ describe('PATCH /perfil/senha/alterar', () => {
       const token = await generateValidToken(user);
 
       const response = await server
-        .patch('/perfil/senha/alterar')
+        .patch(`/perfil/senha/alterar/${validUserIdParam}`)
         .set('Authorization', `Bearer ${token}`)
         .send({});
 
@@ -86,11 +98,53 @@ describe('PATCH /perfil/senha/alterar', () => {
       const body = generateValidBody();
 
       const response = await server
-        .patch('/perfil/senha/alterar')
+        .patch(`/perfil/senha/alterar/${user.id}`)
         .set('Authorization', `Bearer ${token}`)
         .send(body);
 
       expect(response.status).toEqual(httpStatus.UNAUTHORIZED);
+    });
+
+    it('should respond with status 401 when the userId received by route parameter is not the authenticated userId', async () => {
+      const authenticatedUser = await createUser();
+      const anotherUser = await createUser();
+      const token = await generateValidToken(authenticatedUser);
+      const body = generateValidBody();
+
+      const response = await server
+        .patch(`/perfil/senha/alterar/${anotherUser.id}`)
+        .set('Authorization', `Bearer ${token}`)
+        .send(body);
+
+      expect(response.status).toEqual(httpStatus.UNAUTHORIZED);
+    });
+
+    it('should respond with status 404 when authenticated user does not exist anymore', async () => {
+      const user = await createUser();
+      const deletedUserId = user.id;
+      await deleteUser(user);
+      const token = await generateValidToken(user);
+      const body = generateValidBody();
+
+      const response = await server
+        .patch(`/perfil/senha/alterar/${deletedUserId}`)
+        .set('Authorization', `Bearer ${token}`)
+        .send(body);
+
+      expect(response.status).toEqual(httpStatus.NOT_FOUND);
+    });
+
+    it('should respond with status 404 when user (received by userId param) does not exist', async () => {
+      const user = await createUser();
+      const token = await generateValidToken(user);
+      const body = generateValidBody();
+
+      const response = await server
+        .patch(`/perfil/senha/alterar/${validUserIdParam}`)
+        .set('Authorization', `Bearer ${token}`)
+        .send(body);
+
+      expect(response.status).toEqual(httpStatus.NOT_FOUND);
     });
 
     it('should respond with status 200 and change user password', async () => {
@@ -100,7 +154,7 @@ describe('PATCH /perfil/senha/alterar', () => {
       const body = generateValidBody(password);
 
       const response = await server
-        .patch('/perfil/senha/alterar')
+        .patch(`/perfil/senha/alterar/${user.id}`)
         .set('Authorization', `Bearer ${token}`)
         .send(body);
 

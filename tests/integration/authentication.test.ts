@@ -3,12 +3,12 @@ import supertest from 'supertest';
 import httpStatus from 'http-status';
 import { faker } from '@faker-js/faker';
 import { createUser } from '../factories/user.factory';
-import { cleanDatabase } from '../helpers';
+import { clearDatabase } from '../helpers';
 import UserModel from '@/models/user.model';
 
 beforeAll(async () => {
   await init();
-  await cleanDatabase();
+  await clearDatabase();
 });
 
 afterAll(async () => {
