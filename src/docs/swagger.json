@@ -183,7 +183,7 @@
                   "statusCode": 400,
                   "message": "invalid data was sent",
                   "details": {
-                    "userId": "userId length must be 24 characters long"
+                    "userId": "userId length must be 24 characters long | userId must only contain hexadecimal characters"
                   }
                 }
               }
@@ -204,11 +204,19 @@
         }
       }
     },
-    "/perfil/senha/alterar": {
+    "/perfil/senha/alterar/{userId}": {
       "patch": {
         "summary": "User password change",
         "description": "This route allows users to change their password",
         "tags": ["User profile"],
+        "parameters" : [
+          {
+            "name": "userId",
+            "in": "path",
+            "description": "User id whose password will be changed",
+            "required": true
+          }
+        ],
         "security": [{ "bearerAuth": [] }],
         "requestBody": {
           "content": {
@@ -247,7 +255,7 @@
                   "statusCode": 400,
                   "message": "invalid data was sent",
                   "details": {
-                    "userId": "userId length must be 24 characters long"
+                    "userId": "userId length must be 24 characters long | userId must only contain hexadecimal characters"
                   }
                 }
               }
@@ -260,7 +268,7 @@
                 "example": {
                   "type": "unauthorized",
                   "statusCode": 401,
-                  "message": "current password is incorrect | missing authorization header | invalid token | invalid signature | jwt malformed | jwt expired"
+                  "message": "current password is incorrect | you can only change your own password | missing authorization header | invalid token | invalid signature | jwt malformed | jwt expired"
                 }
               }
             }
